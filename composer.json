@@ -1,0 +1,36 @@
+{
+    "name": "ubitcorp/laravel-filter",
+    "description": "It provides a Eloquent query builder that can be used with trait on any model for Laravel project",
+    "keywords": ["ubitcorp", "laravel-filter", "filter", "eloquent","query builder","hasan civelek"],
+    "license": "MIT",
+    "homepage": "https://github.com/ubitcorp/laravel-filter",
+    "authors": [{
+        "name": "Hasan Civelek",
+        "email": "hasan@ubit.com.tr",
+        "role": "Developer"
+    }],
+    "require": {
+        "php": "~7.1",
+        "illuminate/support": "5.5.x|5.6.x|5.7.x|5.8.x"
+    },
+    "autoload": {
+        "psr-4": {
+            "ubitcorp\\Filter\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ubitcorp\\Filter\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "ubitcorp\\Filter\\ServiceProvider"
+            ],
+            "aliases": {
+                "Filter": "ubitcorp\\Filter\\Facade"
+            }
+        }
+    }
+}
