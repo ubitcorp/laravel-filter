@@ -12,13 +12,13 @@ It provides a Eloquent Filter from request or an array. It can be used with trai
 Via Composer
 
 ``` bash
-$ composer require ubitcorp/laravel-filter
+composer require ubitcorp/laravel-filter
 ``` 
 
 To change configuration file:
 
 ``` bash
-$ php artisan vendor:publish --provider="ubitcorp\Filter\ServiceProvider" 
+php artisan vendor:publish --provider="ubitcorp\Filter\ServiceProvider" 
 ``` 
  
 
@@ -26,7 +26,7 @@ $ php artisan vendor:publish --provider="ubitcorp\Filter\ServiceProvider"
 This package provides the **filter** trait that can be included any model. After that the functions below can be used:
 
 
-````
+```` (php)
 //In Project Model (example)
 namespace App\Models;
 
@@ -40,7 +40,7 @@ class Project extends Model
 }
 ````
 
-````
+```` (php)
 //In a Controller
 Project::with("customer")->**filter()**->paginate();
 ````
