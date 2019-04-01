@@ -42,7 +42,7 @@ class Project extends Model
 
 ```` php
 //In a Controller
-Project::with("customer")->**filter()**->paginate();
+Project::with("customer")->filter()->paginate();
 ````
 
 
