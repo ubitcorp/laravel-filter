@@ -15,7 +15,7 @@ trait Filter
           $params = request()->all();
       }
 
-      $preIgnoredFields = config("filter.pre_ignored_fields");
+      $preIgnoredFields = config("filter.pre_ignored_fields",[]);
 
       if(isset($params["fields"]))  //return back only this fields
       {
@@ -44,9 +44,14 @@ trait Filter
                           $query->where($subkey, "like", '%'.$val.'%');
                   });
               }
-              else if(is_array($val))
-                  $query->whereIn($key, $val);
-              else if(strpos($key, "_id"))
+              else if(is_array($val)){
+                  if(array_key_exists("_json_", $val))
+                  {
+                    $query->whereRaw('json_contains('.$key.', \'' . json_encode($val['_json_'],JSON_UNESCAPED_UNICODE) . '\')');
+                  }
+                  else
+                      $query->whereIn($key, $val);
+              }else if(strpos($key, "_id"))
                   $query->where($key,$val);
               //else if(isset($this->casts[$key]) && $this->casts[$key]=="json")            
                   //$query->whereJsonContains($key,[$val]);

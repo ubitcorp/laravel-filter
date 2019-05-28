@@ -1,4 +1,4 @@
 <?php  
 return [ 
-    'pre_ignored_fields' => ["page","fields","sort","limit"] //this fields are always ignored
+    'pre_ignored_fields' => ["page","fields","sort","limit","cast"] //this fields are always ignored
 ];
