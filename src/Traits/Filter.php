@@ -25,9 +25,11 @@ trait Filter
       }
 
       foreach($params as $key=>$val)
-      {
+      {  
+
           if(in_array($key, $ignoreFields) || in_array($key, $preIgnoredFields))
               continue; 
+
           if(!$ignoreNull || ($ignoreNull && !is_null($val))){
               if(strpos($key,"|"))//alt sorgu
               {  
@@ -44,17 +46,26 @@ trait Filter
                           $query->where($subkey, "like", '%'.$val.'%');
                   });
               }
-              else if(is_array($val)){
-                  if(array_key_exists("_json_", $val))
-                  {
-                    $query->whereRaw('json_contains('.$key.', \'' . json_encode($val['_json_'],JSON_UNESCAPED_UNICODE) . '\')');
-                  }
-                  else
-                      $query->whereIn($key, $val);
-              }else if(strpos($key, "_id"))
-                  $query->where($key,$val);
-              //else if(isset($this->casts[$key]) && $this->casts[$key]=="json")            
-                  //$query->whereJsonContains($key,[$val]);
+              /*else if(is_array($val)){
+                if(array_key_exists("_json_", $val))
+                {
+                  $query->whereRaw('json_contains('.$key.', \'' . json_encode($val['_json_'],JSON_UNESCAPED_UNICODE) . '\')');
+                }
+                else if(isset($this->casts[$key]) && $this->casts[$key]=="json")
+                    $query->whereRaw('json_contains('.$key.', \'' . json_encode($val,JSON_UNESCAPED_UNICODE) . '\')');
+                else
+                    $query->whereIn($key, $val);
+              } */             
+              else if(strpos($key, "_id"))
+                  $query->where($key, $val);
+              else if(isset($this->casts[$key]) && $this->casts[$key]=="json"){
+                
+                if(is_array($val))
+                    $query->whereJsonContains($key, $val);
+                else
+                    $query->whereJsonContains($key, [$val]);
+                    
+              }
               else
                   $query->where($key,'like','%'.$val.'%');
               
