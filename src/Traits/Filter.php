@@ -83,8 +83,11 @@ trait Filter
         }
         
         $query->orderBy($params['sort'], $way);
-      }
-      
+      } 
+
+      if(env('UBITCORP_FILTER_LOG_SQL'))
+        info($query->toSql());
+
       return $query;
   }
 }
