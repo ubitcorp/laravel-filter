@@ -10,10 +10,11 @@ trait Filter
  
   public function scopeFilter(Builder $query, $params=[], $ignoreNull = true, $ignoreFields=[])
   {   
+
       if(!count($params))
       {
           $params = request()->all();
-      }
+      }     
 
       $preIgnoredFields = config("filter.pre_ignored_fields",[]);
 
@@ -26,11 +27,13 @@ trait Filter
 
       foreach($params as $key=>$val)
       {  
+          $key = preg_replace("/[>|]/",".",$key);
 
           if(in_array($key, $ignoreFields) || in_array($key, $preIgnoredFields))
               continue; 
 
           if(!$ignoreNull || ($ignoreNull && !is_null($val))){
+            /*
               if(strpos($key,"|"))//alt sorgu
               {  
                   $str = explode("|", $key);
@@ -45,7 +48,7 @@ trait Filter
                       else
                           $query->where($subkey, "like", '%'.$val.'%');
                   });
-              }
+              }*/
               /*else if(is_array($val)){
                 if(array_key_exists("_json_", $val))
                 {
@@ -56,6 +59,8 @@ trait Filter
                 else
                     $query->whereIn($key, $val);
               } */             
+              if(is_array($val))
+                $query->whereIn($key,$val);
               else if(strpos($key, "_id"))
                   $query->where($key, $val);
               else if(isset($this->casts[$key]) && $this->casts[$key]=="json"){
