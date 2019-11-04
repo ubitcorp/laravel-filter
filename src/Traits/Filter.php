@@ -27,15 +27,17 @@ trait Filter
 
       foreach($params as $key=>$val)
       {  
-          $key = preg_replace("/[>|]/",".",$key);
+          //relation.column type filtering only works if that subqueary joined the main. old method is better than this.
+          //$key = preg_replace("/[>|]/",".",$key);
 
-          if(in_array($key, $ignoreFields) || in_array($key, $preIgnoredFields))
-              continue; 
+          //if(in_array($key, $ignoreFields) || in_array($key, $preIgnoredFields))
+              //continue; 
 
           if(!$ignoreNull || ($ignoreNull && !is_null($val))){
-            /*
-              if(strpos($key,"|"))//alt sorgu
+            
+              if(strpos($key,"|") || strpos($key,">"))//alt sorgu
               {  
+                  $key = str_replace(">","|", $key);
                   $str = explode("|", $key);
                  
                   $rel = $str[0];
@@ -48,7 +50,7 @@ trait Filter
                       else
                           $query->where($subkey, "like", '%'.$val.'%');
                   });
-              }*/
+              }
               /*else if(is_array($val)){
                 if(array_key_exists("_json_", $val))
                 {
@@ -59,8 +61,6 @@ trait Filter
                 else
                     $query->whereIn($key, $val);
               } */             
-              if(is_array($val))
-                $query->whereIn($key,$val);
               else if(strpos($key, "_id"))
                   $query->where($key, $val);
               else if(isset($this->casts[$key]) && $this->casts[$key]=="json"){
@@ -71,6 +71,8 @@ trait Filter
                     $query->whereJsonContains($key, [$val]);
                     
               }
+              else if(is_array($val))
+                $query->whereIn($key,$val);
               else
                   $query->where($key,'like','%'.$val.'%');
               
