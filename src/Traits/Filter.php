@@ -28,16 +28,15 @@ trait Filter
       foreach($params as $key=>$val)
       {  
           //relation.column type filtering only works if that subqueary joined the main. old method is better than this.
-          //$key = preg_replace("/[>|]/",".",$key);
-
-          //if(in_array($key, $ignoreFields) || in_array($key, $preIgnoredFields))
-              //continue; 
+          $key = str_replace(">",".", $key);  //if relation already loaded
+          
+          if(in_array($key, $ignoreFields) || in_array($key, $preIgnoredFields))
+              continue; 
 
           if(!$ignoreNull || ($ignoreNull && !is_null($val))){
             
-              if(strpos($key,"|") || strpos($key,">"))//alt sorgu
+              if(strpos($key,"|"))  //relations query
               {  
-                  $key = str_replace(">","|", $key);
                   $str = explode("|", $key);
                  
                   $rel = $str[0];
