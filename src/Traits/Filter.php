@@ -79,16 +79,22 @@ trait Filter
       }
 
       //sort = -name --> desc, name -> asc
+      //sort[]=nickname&sort[]=-created_at
       if(isset($params['sort'])){
         
-        $way = 'ASC';
-        if(substr($params['sort'],0,1)=='-')
-        {
-          $way = 'DESC';
-          $params['sort']=str_replace('-','',$params['sort']);
+        if(!is_array($params['sort']))
+          $params['sort']=[$params['sort']];
+
+        foreach($params['sort'] as $sort){
+          $way = 'ASC';
+          if(substr($sort,0,1)=='-')
+          {
+            $way = 'DESC';
+            $sort=str_replace('-','',$sort);
+          }
+          
+          $query->orderBy($sort, $way);
         }
-        
-        $query->orderBy($params['sort'], $way);
       } 
 
       if(env('UBITCORP_FILTER_LOG_SQL'))
