@@ -4,17 +4,23 @@ namespace ubitcorp\Filter\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Schema;
+use DB;
 
 trait Filter
 {
  
   public function scopeFilter(Builder $query, $params=[], $ignoreNull = true, $ignoreFields=[])
   {   
+    if(env('UBITCORP_FILTER_LOG_SQL'))
+      DB::enableQueryLog(); // Enable query log
+
 
       if(!count($params))
       {
           $params = request()->all();
       }     
+ 
+      info($params);
 
       $preIgnoredFields = config("filter.pre_ignored_fields",[]);
 
@@ -28,7 +34,8 @@ trait Filter
       foreach($params as $key=>$val)
       {  
           //relation.column type filtering only works if that subqueary joined the main. old method is better than this.
-          $key = str_replace(">",".", $key);  //if relation already loaded
+          //we use -> for json properties, so can't replace > char. we should use . directly
+          //$key = str_replace(">",".", $key);  //if relation already loaded
           
           if(in_array($key, $ignoreFields) || in_array($key, $preIgnoredFields))
               continue; 
@@ -67,8 +74,7 @@ trait Filter
                 if(is_array($val))
                     $query->whereJsonContains($key, $val);
                 else
-                    $query->whereJsonContains($key, [$val]);
-                    
+                    $query->whereJsonContains($key, [$val]);                    
               }
               else if(is_array($val))
                 $query->whereIn($key,$val);
@@ -97,8 +103,10 @@ trait Filter
         }
       } 
 
-      if(env('UBITCORP_FILTER_LOG_SQL'))
-        info($query->toSql());
+      if(env('UBITCORP_FILTER_LOG_SQL')){
+        info($query->toSql()); 
+        info($query->getBindings());
+      }
 
       return $query;
   }
