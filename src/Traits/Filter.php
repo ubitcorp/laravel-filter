@@ -67,8 +67,6 @@ trait Filter
                 else
                     $query->whereIn($key, $val);
               } */             
-              else if(strpos($key, "_id"))
-                  $query->where($key, $val);
               else if(isset($this->casts[$key]) && $this->casts[$key]=="json"){
                 
                 if(is_array($val))
@@ -78,6 +76,8 @@ trait Filter
               }
               else if(is_array($val))
                 $query->whereIn($key,$val);
+              else if(strpos($key, "_id"))
+                  $query->where($key, $val);           
               else
                   $query->where($key,'like','%'.$val.'%');
               
